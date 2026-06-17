@@ -1,0 +1,48 @@
+name: Build EmulationStation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            libsdl2-dev \
+            libsdl2-mixer-dev \
+            libcurl4-openssl-dev \
+            libfreetype6-dev \
+            libfreeimage-dev \
+            rapidjson-dev \
+            libasound2-dev \
+            libvlc-dev \
+            libcec-dev
+
+      - name: Configure
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+
+      - name: Build
+        run: |
+          cd build
+          make -j$(nproc)
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulationstation
+          path: |
+            build/emulationstation
