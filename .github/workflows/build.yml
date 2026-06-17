@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -31,7 +32,7 @@ jobs:
 
       - name: Configure
         run: |
-          mkdir build
+          mkdir -p build
           cd build
           cmake ..
 
@@ -40,9 +41,16 @@ jobs:
           cd build
           make -j$(nproc)
 
-      - name: Upload binary
-        uses: actions/upload-artifact@v4
+      - name: Locate binary
+        run: |
+          echo "Looking for emulationstation..."
+          find . -type f -name "emulationstation" || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v5
         with:
           name: emulationstation
           path: |
+            emulationstation
             build/emulationstation
+          if-no-files-found: error
