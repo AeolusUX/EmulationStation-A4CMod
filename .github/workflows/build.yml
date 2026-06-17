@@ -34,7 +34,9 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake ..
+          cmake .. \
+            -DSCREENSCRAPER_DEV_LOGIN="devid=${{ secrets.SS_DEVID }}&devpassword=${{ secrets.SS_DEVPASSWORD }}" \
+            -DSCREENSCRAPER_SOFTNAME="EmulationStation-A4CMod"
 
       - name: Build
         run: |
